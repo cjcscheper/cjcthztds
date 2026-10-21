@@ -5,7 +5,9 @@ fixes, minor for new features, major for changes that break existing scripts.
 
 ## [Unreleased]
 
-First release, 0.1.0.
+## [0.1.0] - 2026-10-21
+
+First release.
 
 ### Added
 - Loaders with automatic format detection: `load_time_trace`,
