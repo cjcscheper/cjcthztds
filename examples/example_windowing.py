@@ -40,7 +40,7 @@ freq_thz = whole.freq_hz[band] * 1e-12
 plot_1d(
     [freq_thz, freq_thz],
     [np.abs(windowed.field_ratio[sample_index][band]), np.abs(whole.field_ratio[sample_index][band])],
-    colors=[style_colors()[0], style_colors()[2]],
+    colors=[style_colors()[1], style_colors()[0]],
     legend_labels=["windowed", "raw"],
     xlabel="Frequency [THz]", ylabel=r"$|t(f)|$",
     xlim=(0.0, 3.0), ylim=(0.2, 1.0),
