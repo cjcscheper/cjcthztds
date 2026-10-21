@@ -186,7 +186,8 @@ def run_analysis(
 
 
 def main() -> None:
-    """Console command ``cjcthztds-analyze``: run the analysis and return nothing.
+    """Run the analysis and return nothing: the console command ``cjcthztds-analyze``,
+    ``python -m cjcthztds.app.run`` and the Run button on this file all start here.
 
     A console command exits with its function's return value; returning the
     Analysis from here would make the command end with an error status.
@@ -195,4 +196,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    run_analysis()
+    main()
