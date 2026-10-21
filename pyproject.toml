@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cjcthztds"
+# The version is read from src/cjcthztds/__init__.py (__version__), its only source.
+dynamic = ["version"]
+description = "THz time-domain spectroscopy measurement processing: time traces in, spectra and field ratios out."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "C.J.C. Scheper" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+# Only for cjcthztds.app (file dialogs, interactive windows, result plots) and the scripts in
+# examples/; cjcplot is pinned to a release tag. The core never imports matplotlib or cjcplot.
+app = [
+    "matplotlib>=3.7",
+    "cjcplot @ git+https://github.com/cjcscheper/cjcplot.git@v0.2.0",
+]
+
+# Runs run_analysis(), like `python -m cjcthztds.app.run`; needs the app extra. It points at
+# main() rather than run_analysis itself, because a console command exits with the function's
+# return value, and returning the Analysis would end the command with an error status.
+[project.scripts]
+cjcthztds-analyze = "cjcthztds.app.run:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "cjcthztds.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

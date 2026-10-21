@@ -1,0 +1,3 @@
+# The test files mimic instrument exports byte for byte (the Menlo .dat uses CRLF line endings);
+# keep git from rewriting their line endings.
+tests/data/** -text
