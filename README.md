@@ -197,12 +197,10 @@ which pins cjcplot to a release tag (now `v0.2.0`).
 
 <!-- widths = fig_aspect_ratio[0] x 640 px, so all fonts appear at the same size. -->
 
-### Time traces and spectra — `example_time_traces.py`, `example_amplitude_spectra.py`
+### Time traces and spectra
 
-The reference pulse and the pulse after the wafer: 2.4 ps later, at 0.70 of
-the height, with its first echo 6.8 ps after that. Their amplitude spectra
-peak near 1 THz and sink into the noise floor above about 4 THz; the echo
-makes the sample's spectrum ripple.
+A time-domain example, a reference pulse and the pulse after a silicon
+wafer with its echo, and the corresponding amplitude spectra.
 
 <table align="center">
   <tr>
@@ -211,11 +209,10 @@ makes the sample's spectrum ripple.
   </tr>
 </table>
 
-### Field ratio — `example_field_ratio.py`
+### Field ratio
 
-Without a window, |t| oscillates around the interface transmission
-4n/(n+1)² = 0.70 (fringes 146 GHz apart, from the echo); the phase falls
-linearly, −ω(n−1)d/c, and its slope gives the refractive index.
+The complex transmission of the time-domain example above: its magnitude
+and phase.
 
 <table align="center">
   <tr>
@@ -224,10 +221,10 @@ linearly, −ω(n−1)d/c, and its slope gives the refractive index.
   </tr>
 </table>
 
-### Windowing — `example_windowing.py`
+### Windowing
 
-A Tukey window around the direct pulse drops the echo (left), and the
-fringes in |t| disappear: only the flat 0.70 is left (right).
+A window around the first pulse removes the echo (left), and with it the
+fringes in the transmission (right).
 
 <table align="center">
   <tr>
@@ -236,11 +233,10 @@ fringes in |t| disappear: only the flat 0.70 is left (right).
   </tr>
 </table>
 
-### Mapper scan — `example_mapper.py`
+### Mapper scan
 
-The peak amplitude at every position of a synthetic `.tim.csv` reflection
-scan of a 100 mm wafer: the wafer with its two flats and a 2 % variation
-across it; off the wafer only noise.
+A 2D example measurement of a wafer, showing the spatial variation of the
+peak amplitude.
 
 <p align="center">
   <img src="examples/example_mapper.png" alt="peak-amplitude map of a mapper scan" width="384">
