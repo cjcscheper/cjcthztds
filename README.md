@@ -196,20 +196,52 @@ and saves its figure next to itself. They plot with
 which pins cjcplot to a release tag (now `v0.2.0`).
 
 <!-- widths = fig_aspect_ratio[0] x 640 px, so all fonts appear at the same size. -->
+
+### Time traces and spectra — `example_time_traces.py`, `example_amplitude_spectra.py`
+
+The reference pulse and the pulse after the wafer: 2.4 ps later, at 0.70 of
+the height, with its first echo 6.8 ps after that. Their amplitude spectra
+peak near 1 THz and sink into the noise floor above about 4 THz; the echo
+makes the sample's spectrum ripple.
+
 <table align="center">
   <tr>
     <td><img src="examples/example_time_traces.png" alt="reference and sample time traces" width="320"></td>
     <td><img src="examples/example_amplitude_spectra.png" alt="amplitude spectra on a log scale" width="320"></td>
   </tr>
+</table>
+
+### Field ratio — `example_field_ratio.py`
+
+Without a window, |t| oscillates around the interface transmission
+4n/(n+1)² = 0.70 (fringes 146 GHz apart, from the echo); the phase falls
+linearly, −ω(n−1)d/c, and its slope gives the refractive index.
+
+<table align="center">
   <tr>
     <td><img src="examples/example_field_ratio_amplitude.png" alt="magnitude of the field ratio" width="320"></td>
     <td><img src="examples/example_field_ratio_phase.png" alt="unwrapped phase of the field ratio" width="320"></td>
   </tr>
+</table>
+
+### Windowing — `example_windowing.py`
+
+A Tukey window around the direct pulse drops the echo (left), and the
+fringes in |t| disappear: only the flat 0.70 is left (right).
+
+<table align="center">
   <tr>
     <td><img src="examples/example_windowing_trace.png" alt="Tukey window over the sample trace" width="320"></td>
     <td><img src="examples/example_windowing_field_ratio.png" alt="field ratio with and without window" width="320"></td>
   </tr>
 </table>
+
+### Mapper scan — `example_mapper.py`
+
+The peak amplitude at every position of a synthetic `.tim.csv` reflection
+scan of a 100 mm wafer: the wafer with its two flats and a 2 % variation
+across it; off the wafer only noise.
+
 <p align="center">
   <img src="examples/example_mapper.png" alt="peak-amplitude map of a mapper scan" width="384">
 </p>
