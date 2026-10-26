@@ -43,7 +43,7 @@ To pin a fixed version, so a script keeps giving the same numbers later on
 [changelog](CHANGELOG.md)):
 
 ```bash
-pip install git+https://github.com/cjcscheper/cjcthztds.git@v0.1.0
+pip install git+https://github.com/cjcscheper/cjcthztds.git@v0.2.0
 ```
 
 For development, clone the repository and install it editable:

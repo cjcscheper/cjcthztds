@@ -26,7 +26,7 @@ from cjcthztds.spectra import (
 from cjcthztds.traces import TimeTrace, TimeTraceMap, trace_at_position
 from cjcthztds.windows import trace_window, tukey_window
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Analysis",

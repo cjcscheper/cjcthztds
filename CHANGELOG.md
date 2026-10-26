@@ -5,6 +5,8 @@ fixes, minor for new features, major for changes that break existing scripts.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-26
+
 ### Changed
 - README: the example figures are grouped per example, each with a short
   explanation of what it shows.
