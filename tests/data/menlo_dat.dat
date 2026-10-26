@@ -1,7 +1,7 @@
 # Menlo Systems Time Domain Spectrometer
 # Program Version 1.4.6 
 #  Start: -5 ps, Average over 100 waveforms. Date: 2026-10-21
-# Time [ps] 	 THz Signal [a.u.]
+# Time [ps] 	 THz Signal [arb. u]
 -5.00000000	0.00012573
 -4.95000000	-0.00013210
 -4.90000000	0.00064042

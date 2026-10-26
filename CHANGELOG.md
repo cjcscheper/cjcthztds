@@ -8,6 +8,16 @@ fixes, minor for new features, major for changes that break existing scripts.
 ### Changed
 - README: the example figures are grouped per example, each with a short
   explanation of what it shows.
+- **Breaking:** `fourier_transform` (and so `Analysis.spectrum` and
+  `amplitude_spectrum`) is now numpy's plain discrete transform `rfft`, no
+  longer multiplied by `dt` and `exp(-i 2 pi f t0)`. Spectra are in the
+  signal's units and their phase counts from the first sample. Field ratios
+  and power ratios are unchanged.
+- The amplitude-spectrum figure of `plot_analysis` and the raw spectra in the
+  mapper window are shown relative to the reference's maximum (the largest
+  selected spectrum in the mapper window), so the scale no longer depends on
+  the sampling. Axis labels say `[arb. u]` instead of `[a.u.]`, and the
+  mapper's field ratio `[-]`.
 
 ## [0.1.0] - 2026-10-21
 

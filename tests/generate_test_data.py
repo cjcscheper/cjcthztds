@@ -46,7 +46,7 @@ def write_menlo_dat(rng: np.random.Generator) -> None:
         "# Menlo Systems Time Domain Spectrometer",
         "# Program Version 1.4.6 ",
         "#  Start: -5 ps, Average over 100 waveforms. Date: 2026-10-21",
-        "# Time [ps] \t THz Signal [a.u.]",
+        "# Time [ps] \t THz Signal [arb. u]",
     ]
     rows = [f"{t:.8f}\t{s:.8f}" for t, s in zip(time_ps, signal)]
     (DATA / "menlo_dat.dat").write_bytes(("\r\n".join(header + rows) + "\r\n").encode("utf-8"))

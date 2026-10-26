@@ -326,11 +326,11 @@ def select_map_positions(trace_map: TimeTraceMap, *, show_analysis_panels: bool 
         """Traces and Re/Im of their spectra, or of their field ratio once a reference is chosen."""
         ax_td.clear()
         ax_td.set_xlabel("time (ps)")
-        ax_td.set_ylabel("signal (a.u.)")
+        ax_td.set_ylabel("signal [arb. u]")
         for ax, part in ((ax_fft_real, "Re"), (ax_fft_imag, "Im")):
             ax.clear()
             ax.set_xlabel("frequency (THz)")
-            ax.set_ylabel(f"{part}(FFT) (a.u.)")
+            ax.set_ylabel(f"{part}(FFT) [arb. u]")
             ax.set_xlim(0.1, 2.5)
 
         # The reference in black; its spectrum turns the other spectra into field ratios.
@@ -339,18 +339,21 @@ def select_map_positions(trace_map: TimeTraceMap, *, show_analysis_panels: bool 
             ref_trace = trace_map.signal[reference_key]
             ax_td.plot(time_ps, ref_trace, color="black", linestyle="-", linewidth=1.2)
             _, reference_spectrum = fourier_transform(time_ps, ref_trace)
-            ax_fft_real.set_ylabel("Re(field ratio) (a.u.)")
-            ax_fft_imag.set_ylabel("Im(field ratio) (a.u.)")
+            ax_fft_real.set_ylabel("Re(field ratio) [-]")
+            ax_fft_imag.set_ylabel("Im(field ratio) [-]")
+
+        # Spectra of the selected cells. Without a reference they are shown relative to the largest |spectrum|
+        # among them, since the discrete transform's size depends on the number of samples.
+        spectra = [fourier_transform(time_ps, trace_map.signal[key]) for key in selected_order]
+        largest = max((float(np.max(np.abs(spectrum))) for _, spectrum in spectra), default=1.0) or 1.0
 
         # Each selected cell in its colour; collect the in-band values for the y limits.
         real_band, imag_band = [], []
-        for index, (iy, ix) in enumerate(selected_order):
-            trace = trace_map.signal[iy, ix]
+        for index, ((iy, ix), (freq_hz, spectrum)) in enumerate(zip(selected_order, spectra)):
             color = selection_color(index)
-            ax_td.plot(time_ps, trace, color=color, linestyle="-")
-            freq_hz, spectrum = fourier_transform(time_ps, trace)
+            ax_td.plot(time_ps, trace_map.signal[iy, ix], color=color, linestyle="-")
             if reference_spectrum is None:
-                response = spectrum
+                response = spectrum / largest
             else:
                 response = compute_complex_field_ratio(spectrum, reference_spectrum)
             freq_thz = freq_hz * 1e-12

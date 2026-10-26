@@ -67,17 +67,18 @@ def plot_analysis(
     plot_1d(
         x_data, y_data, colors=line_colors, line_styles=line_styles,
         legend_labels=labels, legend_show=show_legends,
-        xlabel="Time [ps]", ylabel="Amplitude [a.u.]", first_on_top=False,
+        xlabel="Time [ps]", ylabel="Amplitude [arb. u]", first_on_top=False,
     )
 
-    # 2. Amplitude spectra on a log scale: bandwidth and noise floor.
-    amplitude = np.abs(analysis.spectrum)
+    # 2. Amplitude spectra on a log scale: bandwidth and noise floor. Shown relative to the reference's
+    #    maximum, since the discrete transform's size depends on the number of samples.
+    amplitude = np.abs(analysis.spectrum) / np.max(np.abs(analysis.spectrum[reference]))
     band_values = amplitude[:, in_band]
     band_values = band_values[band_values > 0]
     plot_1d(
         [freq_thz] * n_traces, list(amplitude), colors=trace_colors,
         legend_labels=list(legend_labels), legend_show=show_legends,
-        xlabel="Frequency [THz]", ylabel="|E(f)| [a.u.]", logy=True,
+        xlabel="Frequency [THz]", ylabel="|E(f)| [arb. u]", logy=True,
         xlim=xlim_thz, ylim=(0.9 * band_values.min(), 1.1 * band_values.max()) if band_values.size else None,
         first_on_top=False,
     )

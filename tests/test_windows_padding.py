@@ -84,4 +84,7 @@ def test_zero_padding_leaves_the_spectrum_unchanged():
     padded_freq_hz, padded_spectrum = fourier_transform(*zero_pad(time_ps, signal, 4.0))
     assert padded_freq_hz.size == 2 * freq_hz.size - 1
     assert np.allclose(padded_freq_hz[::2], freq_hz)
-    assert np.allclose(padded_spectrum[::2], spectrum, rtol=0, atol=1e-12 * np.abs(spectrum).max())
+    # Same magnitude; the phase changes only because the first sample is now 2 ps (the 200 zeros) earlier.
+    atol = 1e-12 * np.abs(spectrum).max()
+    assert np.allclose(np.abs(padded_spectrum[::2]), np.abs(spectrum), rtol=0, atol=atol)
+    assert np.allclose(padded_spectrum[::2], spectrum * np.exp(-2j * np.pi * freq_hz * 2e-12), rtol=0, atol=atol)

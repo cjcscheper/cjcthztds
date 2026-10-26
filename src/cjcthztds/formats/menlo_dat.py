@@ -5,7 +5,7 @@ Layout (tab-separated text, CRLF line endings)::
     # Menlo Systems Time Domain Spectrometer
     # Program Version 1.4.6
     #  Start: -160 ps, Average over 500 waveforms. Date: 2023-11-24
-    # Time [ps] 	 THz Signal [a.u.]
+    # Time [ps] 	 THz Signal [arb. u]
     -160.04254343	0.00000000
     -160.00918702	0.00000002
     ...

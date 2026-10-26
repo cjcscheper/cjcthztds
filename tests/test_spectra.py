@@ -29,16 +29,20 @@ def single_cycle_pulse(time_ps, center_ps=0.0):
 
 
 def test_fourier_transform_of_a_gaussian():
-    """A Gaussian of width sigma at t0 has |E(f)| = sigma sqrt(2 pi) exp(-2 pi^2 sigma^2 f^2) and phase -2 pi f t0."""
-    t0_ps = 1.0
-    freq_hz, spectrum = fourier_transform(TIME_PS, np.exp(-0.5 * ((TIME_PS - t0_ps) / SIGMA_PS) ** 2))
-    sigma, t0 = SIGMA_PS * 1e-12, t0_ps * 1e-12
-    expected = sigma * np.sqrt(2 * np.pi) * np.exp(-2 * np.pi**2 * sigma**2 * freq_hz**2)
-    # Amplitude: 0.752 ps (in V s per V) at f = 0, falling to 1/e at f = 1 / (sqrt(2) pi sigma) = 0.75 THz.
-    assert np.abs(spectrum[0]) == pytest.approx(SIGMA_PS * np.sqrt(2 * np.pi) * 1e-12, rel=1e-10)
+    """A Gaussian of width sigma, t0 after the first sample: |E_k| = (sigma/dt) sqrt(2 pi) exp(-2 pi^2 sigma^2 f^2),
+    phase -2 pi f t0."""
+    center_ps = 1.0
+    freq_hz, spectrum = fourier_transform(TIME_PS, np.exp(-0.5 * ((TIME_PS - center_ps) / SIGMA_PS) ** 2))
+    sigma, dt = SIGMA_PS * 1e-12, 0.02e-12
+    # The sum over samples is the integral divided by dt: sqrt(2 pi) x 0.3 ps / 0.02 ps = 37.6 at f = 0, falling
+    # to 1/e at f = 1 / (sqrt(2) pi sigma) = 0.75 THz.
+    expected = sigma / dt * np.sqrt(2 * np.pi) * np.exp(-2 * np.pi**2 * sigma**2 * freq_hz**2)
+    assert np.abs(spectrum[0]) == pytest.approx(SIGMA_PS / 0.02 * np.sqrt(2 * np.pi), rel=1e-10)
     assert np.allclose(np.abs(spectrum), expected, rtol=0, atol=1e-10 * expected[0])
-    # Phase: the pulse centre t0 gives exp(-i 2 pi f t0); checked where the amplitude is well above rounding.
+    # Phase: the discrete transform counts time from the first sample (-20 ps), so the pulse centre is
+    # t0 = 21 ps later and gives exp(-i 2 pi f t0); checked where the amplitude is well above rounding.
     strong = expected > 1e-6 * expected[0]
+    t0 = (center_ps - TIME_PS[0]) * 1e-12
     expected_phase = np.exp(-2j * np.pi * freq_hz[strong] * t0)
     assert np.allclose(spectrum[strong], expected[strong] * expected_phase, atol=1e-10 * expected[0])
 

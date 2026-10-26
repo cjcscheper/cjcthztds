@@ -1,8 +1,8 @@
 """From time traces to spectra: Fourier transform, complex field ratio, band limits, phase.
 
 Sign convention (THEORY.md derives it and compares it with cjctmm): the
-spectrum is ``E(f) = sum_n E(t_n) exp(-i 2 pi f t_n) dt``, the same kernel as
-numpy's forward FFT. In this convention a pulse that arrives a time ``Δt``
+spectrum is numpy's discrete forward transform, ``E_k = sum_n E_n exp(-i 2 pi k n / N)``,
+with kernel ``exp(-i 2 pi f t)``. In this convention a pulse that arrives a time ``Δt``
 later has its spectrum multiplied by ``exp(-i 2 pi f Δt)``, so the phase of
 the field ratio of a delayed sample *decreases* with frequency, with slope
 ``-Δt`` against ``ω = 2 pi f``.
@@ -19,21 +19,13 @@ _SECONDS_PER_PS = 1e-12
 
 
 def fourier_transform(time_ps: np.ndarray, signals: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Fourier transform of real time traces, at the non-negative frequencies.
+    """Discrete Fourier transform of real time traces, at the non-negative frequencies.
 
-    Computes ``E(f_k) = sum_n E(t_n) exp(-i 2 pi f_k t_n) dt`` with
-    ``f_k = k / (N dt)``. This is numpy's ``rfft`` times two factors that make it
-    an approximation of the continuous Fourier integral
-    ``∫ E(t) exp(-i 2 pi f t) dt``:
-
-    - ``dt``, so the amplitude does not depend on how finely the trace was
-      sampled or how much it was zero-padded;
-    - ``exp(-i 2 pi f t_0)``, the phase of the first sample's time ``t_0``, so
-      the phase refers to t = 0 of the time axis and not to wherever the
-      trace happens to start. A pulse at t = 0 then has a flat phase.
-
-    Field ratios (sample over reference on the same time axis) do not depend
-    on either factor; spectra of single traces and padded spectra do.
+    Computes numpy's ``rfft``, ``E_k = sum_n E_n exp(-i 2 pi k n / N)``, at the
+    frequencies ``f_k = k / (N dt)``, nothing added. The amplitude is in the
+    signal's own units and grows with the number of samples under the pulse;
+    the phase refers to the first sample, not to t = 0. Neither matters for a
+    field ratio (sample over reference on the same time axis): both cancel.
 
     Parameters
     ----------
@@ -47,7 +39,7 @@ def fourier_transform(time_ps: np.ndarray, signals: np.ndarray) -> tuple[np.ndar
     freq_hz : ndarray, shape (N // 2 + 1,)
         Frequencies in Hz, from 0 to the Nyquist frequency ``1 / (2 dt)``.
     spectrum : ndarray, complex, shape (N // 2 + 1,) or (M, N // 2 + 1)
-        The spectrum of each trace, in signal units times seconds.
+        The spectrum of each trace, in the signal's units.
     """
     # The transform assumes equal time steps; refuse an axis that does not have them.
     time_ps = np.asarray(time_ps, dtype=np.float64)
@@ -61,10 +53,8 @@ def fourier_transform(time_ps: np.ndarray, signals: np.ndarray) -> tuple[np.ndar
         raise ValueError("time_ps must increase in equal steps (within 0.1 %); resample the traces first")
 
     # Only the non-negative frequencies: a real trace has E(-f) = E(f)*, so the rest is redundant.
-    dt = dt_ps * _SECONDS_PER_PS
-    freq_hz = np.fft.rfftfreq(time_ps.size, d=dt)
-    spectrum = np.fft.rfft(signals, axis=-1) * dt * np.exp(-2j * np.pi * freq_hz * time_ps[0] * _SECONDS_PER_PS)
-    return freq_hz, spectrum
+    freq_hz = np.fft.rfftfreq(time_ps.size, d=dt_ps * _SECONDS_PER_PS)
+    return freq_hz, np.fft.rfft(signals, axis=-1)
 
 
 def compute_complex_field_ratio(spectrum: np.ndarray, reference_spectrum: np.ndarray) -> np.ndarray:
@@ -156,8 +146,8 @@ def unwrapped_phase(
 def amplitude_spectrum(trace: TimeTrace) -> tuple[np.ndarray, np.ndarray]:
     """``|E(f)|`` of one trace, for a quick look at bandwidth and noise floor.
 
-    Returns ``(freq_hz, amplitude)``, with the amplitude in signal units times
-    seconds (see :func:`fourier_transform`). The trace must be uniformly sampled.
+    Returns ``(freq_hz, amplitude)``, with the amplitude in the signal's units
+    (see :func:`fourier_transform`). The trace must be uniformly sampled.
     """
     # No windowing or padding: the spectrum of the trace as measured.
     freq_hz, spectrum = fourier_transform(trace.time_ps, trace.signal)

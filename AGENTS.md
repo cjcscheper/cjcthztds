@@ -93,8 +93,8 @@ THEORY.md            processing chain, why each step, time convention, compariso
 - **The frequency band never limits the computation**: `freq_min_hz`,
   `freq_max_hz` are stored for plots and fits; every array covers 0 to Nyquist.
 - **Sign convention is fixed** (THEORY.md, section 8): spectra use numpy's
-  kernel `exp(-i omega t)`, with the `dt` and `exp(-i omega t0)` factors of
-  `fourier_transform`; a delayed sample has a falling field-ratio phase.
+  kernel `exp(-i omega t)` (`fourier_transform` is plain `rfft`); a delayed
+  sample has a falling field-ratio phase.
   `test_field_ratio_of_a_delayed_copy_is_a_phase_ramp` pins it; never change
   that test to match code.
 - **No user-editable settings in the package**: no module-level constants that

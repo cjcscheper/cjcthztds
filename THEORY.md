@@ -58,9 +58,6 @@ Why centre at all, when it changes **neither the magnitude nor the phase of
 the field ratio** (both traces move by the same time, and a common shift
 cancels in the ratio, see section 6)?
 
-- The phase of a *single* spectrum contains $`e^{-i\omega t_\mathrm{peak}}`$:
-  with the pulse at $`t = 0`$ that ramp is gone and the remaining phase
-  describes the pulse shape.
 - Window regions are given relative to the reference pulse, so the same
   regions fit every measurement, wherever the stage happened to start.
 - The peak time of each sample on the centred axis is directly its delay
@@ -115,11 +112,13 @@ Several regions are combined by taking the largest window value at each time.
 The discrete Fourier transform of $`N`$ samples gives the spectrum at
 $`f_k = k/(N\Delta t)`$, spaced $`\delta f = 1/T`$. Appending zeros
 (`zero_pad`) makes $`N`$ larger and $`\delta f`$ smaller, but the zeros were not
-measured. The padded transform evaluates **the same** continuous spectrum,
-$`\sum_n E(t_n)e^{-i2\pi f t_n}\Delta t`$, at more frequencies: the extra
-terms are zero. When the length grows by a whole factor, every new
-frequency grid contains the old one, and the padded spectrum passes exactly
-through the old values (`test_zero_padding_leaves_the_spectrum_unchanged`).
+measured. The padded transform evaluates **the same** sum,
+$`\sum_n E(t_n)e^{-i2\pi f t_n}`$, at more frequencies: the extra terms
+are zero. When the length grows by a whole factor, every new frequency grid
+contains the old one, and the padded spectrum has exactly the old magnitudes
+there; its phase only shifts by $`e^{-i2\pi f\,\tau}`$, because the first
+sample now lies a time $`\tau`$ (the zeros in front) earlier
+(`test_zero_padding_leaves_the_spectrum_unchanged`).
 
 So zero padding makes curves smoother and peaks easier to read off, but it
 does not separate features closer than $`1/T`$ (or $`1/W`$ after a window):
@@ -127,23 +126,24 @@ that resolution is set by how long the field was measured.
 
 ## 6. The Fourier transform
 
-`fourier_transform` returns
+`fourier_transform` returns numpy's discrete transform `rfft`,
 
 ```math
-E(f_k) = \sum_{n=0}^{N-1} E(t_n)\, e^{-i 2\pi f_k t_n}\, \Delta t,
-\qquad f_k = \frac{k}{N\Delta t},\quad k = 0 \dots \lfloor N/2 \rfloor,
+E_k = \sum_{n=0}^{N-1} E_n\, e^{-i 2\pi k n / N}
+\qquad \text{at}\quad f_k = \frac{k}{N\Delta t},\quad k = 0 \dots \lfloor N/2 \rfloor,
 ```
 
-which is numpy's `rfft` multiplied by $`\Delta t\, e^{-i2\pi f_k t_0}`$. It
-approximates the continuous transform $`\int E(t)\,e^{-i2\pi f t}\,dt`$:
+with $`E_n = E(t_0 + n\Delta t)`$. Nothing is added to it, so:
 
-- $`\Delta t`$ makes the amplitude independent of the sampling and padding
-  (units: signal × s). A Gaussian $`e^{-t^2/2\sigma^2}`$ gives
-  $`\sigma\sqrt{2\pi}\,e^{-2\pi^2\sigma^2 f^2}`$ (`test_fourier_transform_of_a_gaussian`).
-- $`e^{-i2\pi f t_0}`$ refers the phase to $`t = 0`$ of the time axis instead
-  of to the first sample, so a pulse centred at $`t = 0`$ has a flat phase.
+- its amplitude is in the signal's units and grows with the number of samples
+  under the pulse: it is the continuous transform divided by $`\Delta t`$. A
+  Gaussian $`e^{-t^2/2\sigma^2}`$ gives $`(\sigma/\Delta t)\sqrt{2\pi}\,e^{-2\pi^2\sigma^2 f^2}`$
+  (`test_fourier_transform_of_a_gaussian`);
+- its phase counts time from the first sample $`t_0`$, not from $`t = 0`$.
 
-Neither factor changes a field ratio of two traces on the same axis. Only
+Neither changes a field ratio of two traces on the same time axis: both
+traces have the same $`\Delta t`$ and $`t_0`$, so the factors cancel. Plots of
+single spectra are therefore shown relative to the reference's maximum. Only
 $`f \ge 0`$ is returned: a real trace has $`E(-f) = E(f)^*`$. The highest
 frequency is the Nyquist frequency $`1/(2\Delta t)`$ (12.5 THz for 40 fs
 steps). Above the pulse's bandwidth the spectrum is a flat noise floor

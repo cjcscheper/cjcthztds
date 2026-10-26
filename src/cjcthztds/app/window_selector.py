@@ -68,7 +68,7 @@ def select_window_regions(
         legend_labels=labels,
         line_styles=line_styles,
         xlabel="Time [ps]",
-        ylabel="Amplitude [a.u.]",
+        ylabel="Amplitude [arb. u]",
         fig_show=False,
         first_on_top=False,
         legend_show=show_legend,

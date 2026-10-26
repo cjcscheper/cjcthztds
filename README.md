@@ -139,7 +139,7 @@ after padding and `K = N_pad // 2 + 1` frequencies:
 | `window`, `windowed_signal`                   | `(M, N)`         | window per trace (ones without regions), `signal * window`       |
 | `padded_time_ps`, `padded_signal`             | `(N_pad,)`, `(M, N_pad)` | what was Fourier transformed                             |
 | `freq_hz`                                     | `(K,)`           | 0 to the Nyquist frequency, in Hz                                |
-| `spectrum`                                    | `(M, K)`         | complex spectrum of each trace (signal × s)                      |
+| `spectrum`                                    | `(M, K)`         | complex spectrum of each trace (numpy's `rfft`)                 |
 | `field_ratio`, `power_ratio`                  | `(M, K)`         | `spectrum / spectrum[reference_index]`, and its magnitude squared |
 | settings                                      |                  | `window_regions_ps`, `taper`, `center_on_peak`, `padding_ps`, `spline_half_width`, `freq_min_hz`, `freq_max_hz` |
 
